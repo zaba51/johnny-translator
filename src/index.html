@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Johnny assembler</title>
+    <script src="./index.js" defer></script>
+    <link rel="stylesheet" href="./index.css">
+</head>
+
+<body>
+    <header>
+        <h1>Assembler tool for the Johnny Simulator</h1>
+    </header>
+    <main>
+        <section>
+            <h2>Input</h2>
+            <textarea class="textarea input"></textarea>
+            <div class="row">
+                <button class="translate">Translate</button>
+                <button class="clear">Clear</button>
+            </div>
+            <button class="generate">Generate 100 lines</button>
+            <h2>Output</h2>
+            <textarea class="textarea output"></textarea>
+            <button class="copy">Copy</button>
+        </section>
+        <section>
+            <h2>Example</h2>
+            <div class="example">
+                <div class="example-column">
+                    <h3>Input</h3>
+                    <div class="example-field">
+                        000 TAKE 004 any comment<br />
+                        001 ADD 005 (will be)<br />
+                        002 SAVE 006 //deleted<br />
+                        003 HLT 000 <br />
+                        004 DATA 002 <br />
+                        005 DATA 003 <br />
+                        006 DATA 005 <br />
+                        007 <br />
+                        008 <br />
+                    </div>
+                </div>
+                <div class="example-column">
+                    <h3>Output</h3>
+                    <div class="example-field">
+                        1004 <br />
+                        2005 <br />
+                        4006 <br />
+                        10000 <br />
+                        002 <br />
+                        003 <br />
+                        005 <br />
+                        000 <br />
+                        000 <br />
+                    </div>
+                </div>
+            </div>
+            <p>Please follow the pattern shown in the example above.
+                <br />
+                Copy the output into the .ram file
+            </p>
+
+            <div class="instructions">
+                <h4>Intruction set:</h4>
+                <ul>
+                    <li>00 DATA</li>
+                    <li>01 TAKE</li>
+                    <li>02 ADD</li>
+                    <li>03 SUB</li>
+                    <li>04 SAVE</li>
+                    <li>05 JMP</li>
+                    <li>06 TST</li>
+                    <li>07 INC</li>
+                    <li>08 DEC</li>
+                    <li>09 NULL</li>
+                    <li>10 HLT</li>
+                </ul>
+            </div>
+        </section>
+    </main>
+    <footer>Made by Adrian Cygan. 2023 </footer>
+</body>
+
+</html>
