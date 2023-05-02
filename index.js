@@ -23,18 +23,29 @@ const placeholderText = `000 TAKE 004 any comment
 `
 const input = document.querySelector('.input')
 const output = document.querySelector('.output')
-const button = document.querySelector('.translate')
+const translate = document.querySelector('.translate')
 const clear = document.querySelector('.clear')
 const copy = document.querySelector('.copy')
 const generate = document.querySelector('.generate')
 
 input.setAttribute('placeholder', 'Copy your program here')
 
-button.addEventListener('click', () => {
+const leadingNumbers = Array(100).fill(0).map((_, i) => {
+    if (i < 10) return '00' + i;
+    if (i < 100) return '0' + i;
+})
+
+translate.addEventListener('click', () => {
     const lines = input.value.split('\n')
-    const assembled = lines.map(line => {
+    let buildError = false;
+
+    const assembled = lines.map((line, index) => {
         const lineElements = line.split(' ')
-        console.log(lineElements)
+
+        if (!buildError && !validate(lineElements, index)) {
+            buildError = true;
+        }
+
         if (!lineElements[1]) return '000\n'
 
         return operationMap[lineElements[1].toUpperCase()] + lineElements[2] + '\n'
@@ -61,14 +72,69 @@ copy.addEventListener('click', () => {
     navigator.clipboard.writeText(output.value);
 })
 
-generate.addEventListener('click', () => {
-    numbers = Array(100).fill(0).map((_, i) => {
-        if (i < 10) return '00'+i+' \n';
-        if(i < 100) return '0' +i+' \n';
+generate.addEventListener('click', toggleAddresses)
+
+function toggleAddresses() {
+    const lines = input.value.split('\n')
+    let areNumbersShown = false;
+
+    const toggledAddresses = lines.map((line, index) => {
+
+        const lineElements = line.split(' ')
+
+        areNumbersShown = /^\d{3}$/.test(lineElements[0]) ? true : false
+
+        if (areNumbersShown) {
+            console.log('shown', lineElements)
+            lineElements.shift()
+            return lineElements.join(' ') + '\n'
+        }
+        else {
+            console.log('not shown', lineElements)
+            if (leadingNumbers[index]) {
+                lineElements.unshift(leadingNumbers[index])
+                return lineElements.join(' ') + '\n'
+            }
+            return
+        }
     })
-    input.value = numbers.join('');
-})
 
-function validate(line) {
+    let rest = '';
+    for (let i = toggledAddresses.length; i < 100; i++) {
+        if (areNumbersShown) {
+            rest += '\n'
+        }
+        else {
+            rest += leadingNumbers[i] + ' \n'
+        }
+    }
 
+    input.value = (toggledAddresses.join('') + rest).trimEnd();
+}
+
+function validate(line, index) {
+
+    if ( /^\d{3}$/.test(line[0]) === false) {
+        displayError(leadingNumbers[index], line, "A line must start with an address between 000 and 999")
+        return false;
+    }
+    if (! line[1]) return true
+
+    if (Object.keys(operationMap).includes(line[1].toUpperCase()) === false ) {
+        displayError(leadingNumbers[index], line, `Instruction "${line[1]}" does not exist`)
+        return false;
+    }
+
+    if ( /^\d{3}$/.test(line[2]) === false) {
+        displayError(leadingNumbers[index], line, "Instruction name must be followed by value or an address")
+        return false;
+    }
+    return true;
+}
+
+function displayError(address, line, message) {
+    alert(`Build failed
+You have an error in your syntax at line ${address} 
+> "${line.join(' ')}"
+${message}`)
 }
